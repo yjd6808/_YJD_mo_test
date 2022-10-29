@@ -1,0 +1,6 @@
+[submodule "third_party/ready_thread"]
+	path = third_party/ready_thread
+	url = https://github.com/yjd6808/_YJD_ready_thread.git
+[submodule "third_party/googletest"]
+	path = third_party/googletest
+	url = https://github.com/google/googletest.git
