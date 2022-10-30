@@ -1,42 +1,46 @@
 #include "all_in_one.h"
 
 
-int X, Y;
-int r1, r2;
+static int X, Y;
+static int r1, r2;
+static int ReorderDetected = 0;
 
 TEST(sample_01, memory_order) {
-  ready_thread_collection col(2);
+  random_int(); 
 
-  col[0]->set_action([]
-    {
-      X = 1;
-      BARRIER;
-      r1 = Y;
-    });
-  col[1]->set_action([]
-    {
-      Y = 1;
-      BARRIER;
-      r2 = X;
-    });
+  ready_thread_collection& pool = g_threads_2;
+  pool[0]->set_action([]
+  {
+    rd();
+
+    X = 1;
+    BARRIER;
+    r1 = Y;
+  });
+
+  pool[1]->set_action([]
+  {
+    rd();
+
+    Y = 1;
+    BARRIER;
+    r2 = X;
+  });
 
 
-  constexpr int iteration = 100000;
-  int reorder_detected = 0;
-
-  for (int k = 0; k < iteration; k++)
+  for (int k = 0; k < g_iteration; k++)
   {
     X = 0;
     Y = 0;
 
-    col.run();
+    pool.run();
 
     if (r1 == 0 && r2 == 0)
-      reorder_detected++;
+      ReorderDetected++;
   }
 
-  
-  std::cout << reorder_detected << "회 재배치 검출\n";
-  std::cout << iteration - reorder_detected << "회 가능한\n";
+  print_line("%d회 테스트 중 %d회 재배치 검출", pool.launch_count(), ReorderDetected);
+  EXPECT_EQ(ReorderDetected, 0);
+  pool.reset_statistics();
 }
 

@@ -16,6 +16,7 @@ arm64 및 x86-64 아키텍쳐에서 메모리 오더링 테스트 편하게 하�
 <br>
 
 ## <b> 개발 시작하기 </b>
+
 ### [리눅스]  
 1. git clone https://github.com/yjd6808/_YJD_mo_test mo_test && cd mo_test
 2. git submodule update --init --recursive
@@ -43,3 +44,6 @@ arm64 및 x86-64 아키텍쳐에서 메모리 오더링 테스트 편하게 하�
 ![vs_02](docs/images/vs_02.png)
 
 <br>
+
+참고사항 : cmake -S . -B build -DBUILD_SHARED_LIBS=ON   
+씨맥 옵션을 위처럼 주게되면 동적라이브러리로 뽑아줌
