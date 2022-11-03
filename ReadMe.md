@@ -45,5 +45,6 @@ arm64 및 x86-64 아키텍쳐에서 메모리 오더링 테스트 편하게 하�
 
 <br>
 
-참고사항 : cmake -S . -B build -DBUILD_SHARED_LIBS=ON   
-씨맥 옵션을 위처럼 주게되면 동적라이브러리로 뽑아줌
+cmake -S . -B build -DBUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+cmake -S . -B build -DBUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF
+cmake -S . -B build -DBUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -G ""

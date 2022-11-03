@@ -3,7 +3,6 @@ include (cmake/list_extension.cmake)
 cmake_minimum_required(VERSION 3.18)
 project(mo_test LANGUAGES CXX)
 
-# cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
 # 윈도우에서는 빌드툴 생성할 때 32비트 설정을 해줘야함
 
 # https://stackoverflow.com/questions/10046114/in-cmake-how-can-i-test-if-the-compiler-is-clang

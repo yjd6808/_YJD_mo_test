@@ -2,7 +2,7 @@
 bin/
 third_party/
 build/
-
+.vscode/
 
 # CMake 관련
 CMakeLists.txt.user
