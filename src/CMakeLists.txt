@@ -1,3 +1,5 @@
+
+
 cmake_minimum_required(VERSION 3.18)
 project(${CMAKE_PROJECT_NAME} LANGUAGES CXX)
 
@@ -5,35 +7,11 @@ project(${CMAKE_PROJECT_NAME} LANGUAGES CXX)
 # 빌드시마다 자동으로 체크해서 변경된 파일 추가/삭제해줌
 # GLOB 대신 GLOB_RECURSE를 쓰면 하위 폴더까지 재귀적으로 스캔해줌
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS *.h)
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS *.cpp)
+file(GLOB_RECURSE blog_sources CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/blog_tests/*.cpp)
+file(GLOB_RECURSE memory_order_sources CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/memory_order_tests/*.cpp)
 file(GLOB_RECURSE cmakestext CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/CMakeLists.txt)
 file(GLOB_RECURSE ready_threads CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/third_party/ready_thread/include/*.h)
 
-
-
-message("=============================================")
-message(프로젝트 명 : ${CMAKE_PROJECT_NAME})
-message(소스디렉토리 : ${CMAKE_SOURCE_DIR})
-message(빌드디렉토리 : ${CMAKE_BINARY_DIR} \n)
-
-message([헤더 파일목록])
-foreach(file ${headers})
-     get_filename_component(name_only ${file} NAME)
-     message(${name_only})
-endforeach()
-
-message(\n[소스 파일목록])
-foreach(file ${sources})
-     get_filename_component(name_only ${file} NAME)
-     message(${name_only})
-endforeach()
-
-message([외부 헤더 파일목록])
-foreach(file ${ready_threads})
-     get_filename_component(name_only ${file} NAME)
-     message(${name_only})
-endforeach()
-message(\n=============================================)
 
 
 # ===========================================================================
@@ -71,21 +49,56 @@ if (${MSVC})
      # 필터 생성
      # https://stackoverflow.com/questions/33808087/cmake-how-to-create-visual-studio-filters
      source_group("ready_threads" FILES ${ready_threads})
+     source_group("blog_tests" FILES ${blog_sources})
+     source_group("memory_order_tests" FILES ${memory_order_sources})
+
+     
 endif()
 
 
+set(sources ${memory_order_sources};${blog_sources})
 
-# ===========================================================================
-# 리눅스 g++ 설정
-# ===========================================================================
+# 빌드 제외시킬 소스 (src 폴더 이하 경로로 -> 파일명에 문자열 포함된 것들 모두 없애줌)
+list_remove_contain(sources blog_my_test1)
+list_remove_contain(sources blog_my_test2)
+list_remove_contain(sources blog_my_test3)
+# list_remove_contain(sources memory_order)
 
+message("=============================================")
+message(프로젝트 명 : ${CMAKE_PROJECT_NAME})
+message(소스디렉토리 : ${CMAKE_SOURCE_DIR})
+message(빌드디렉토리 : ${CMAKE_BINARY_DIR} \n)
 
+message([헤더 파일목록])
+foreach(file ${headers})
+     get_filename_component(name_only ${file} NAME)
+     message(${name_only})
+endforeach()
 
-add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers} ${cmakestext} ${ready_threads})
+message(\n[소스 파일목록])
+foreach(file ${sources})
+     get_filename_component(name_only ${file} NAME)
+     message(${name_only})
+endforeach()
+
+message(\n[외부 헤더 파일목록])
+foreach(file ${ready_threads})
+     get_filename_component(name_only ${file} NAME)
+     message(${name_only})
+endforeach()
+message(\n=============================================)
+
+add_executable(${CMAKE_PROJECT_NAME} 
+  ${sources} 
+  ${headers} 
+  ${cmakestext} 
+  ${ready_threads}
+)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE 
-     ${CMAKE_SOURCE_DIR}/third_party/ready_thread/include 
-     ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/third_party/ready_thread/include 
+    ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
